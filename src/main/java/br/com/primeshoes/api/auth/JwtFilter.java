@@ -30,11 +30,10 @@ public class JwtFilter extends OncePerRequestFilter{
 			throws ServletException, IOException {
 			        
 		String authorization = request.getHeader("Authorization");
-		
-		if(authorization != null && authorization.startsWith("Bearer ")) {
+			
+		if(authorization != null && authorization.startsWith("Bearer ")) {			
 			String token = authorization.substring(7);
 			String email = jwtService.extractEmail(token);
-			
 			if(email != null  && SecurityContextHolder.getContext().getAuthentication() == null) {
 				UserDetails user = userDetailsServiceImpl.loadUserByUsername(email);
 				if(jwtService.isValid(token, user)) {
@@ -42,35 +41,23 @@ public class JwtFilter extends OncePerRequestFilter{
 							new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 					authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 					SecurityContextHolder.getContext().setAuthentication(authToken);
+				}else {
+					response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+					response.getWriter().write("Token inválido");
+					return;
 				}
+			}else {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				response.getWriter().write("Token inválido");
+				return;
 			}
+		}else if(!request.getRequestURL().toString().contains("auth") && !request.getRequestURL().toString().contains("register")) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			response.getWriter().write("Token não informado");
+			return;
 		}
 			
 		filterChain.doFilter(request, response);
 		
 	}	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

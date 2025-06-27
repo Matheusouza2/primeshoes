@@ -8,5 +8,7 @@ CREATE TABLE addresses(
 	complement VARCHAR(255),
 	zipcode BIGINT,
 	user_id BIGINT,
+	created_at TIMESTAMP,
+	updated_at TIMESTAMP,
 	FOREIGN KEY (user_id) REFERENCES users(id)
 );

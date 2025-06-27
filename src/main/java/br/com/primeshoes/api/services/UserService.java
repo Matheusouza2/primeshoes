@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import br.com.primeshoes.api.dtos.CartCreateDTO;
 import br.com.primeshoes.api.dtos.UserCreateDTO;
 import br.com.primeshoes.api.dtos.UserResponseDTO;
 import br.com.primeshoes.api.dtos.UserUpdateDTO;
@@ -24,16 +25,29 @@ public class UserService {
 	
 	@Autowired
 	private AddressRepository addressRepository;
+	
+	private CartService cartService;
+	
+	public UserService(CartService cartService) {
+		this.cartService = cartService;
+	}
 		
-	public UserResponseDTO store(UserCreateDTO userCreateDTO) {
+	public UserResponseDTO store(UserCreateDTO userCreateDTO) throws Exception {
 		
 		User user = UserMapper.toEntity(userCreateDTO);
+		
+		if(user.getEmail() == "") {
+			throw new Exception("E-mail não informado");
+		}
+		
 		user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
 		User userResponse = userRepository.save(user);
 		
 		Address address = new Address();
 		address.setUser(userResponse);
 		addressRepository.save(address);
+		
+		cartService.store(new CartCreateDTO(userResponse));
 		
 		return UserMapper.toDTO(userResponse);
 	}

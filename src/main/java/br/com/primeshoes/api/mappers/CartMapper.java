@@ -14,8 +14,7 @@ public class CartMapper {
 	}
 	
 	public static CartResponseDTO toDTO(Cart cart) {
-		
-		CartResponseDTO cartResponse = new CartResponseDTO(cart.getId(), cart.getUser());
+		CartResponseDTO cartResponse = new CartResponseDTO(cart.getId(), UserMapper.toDTO(cart.getUser()));
 		
 		return cartResponse;
 	}

@@ -5,15 +5,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import br.com.primeshoes.api.entities.User;
 
 @Configuration
 @EnableMethodSecurity
@@ -22,8 +24,8 @@ public class SecurityConfig {
 	private final JwtFilter jwtFilter;
 	private final UserDetailsServiceImpl detailsServiceImpl;
 	private static final String[] ENDPOINTS = {
-		"/api/users/register",
 		"/api/users/auth",
+		"/api/users/register",
 	};
 	
 	public SecurityConfig(JwtFilter filter, UserDetailsServiceImpl detailsServiceImpl) {
@@ -59,5 +61,13 @@ public class SecurityConfig {
 		return configuration.getAuthenticationManager();
 	}	
 	
-	
+	public User getAuthUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+        	User user = (User) authentication.getPrincipal();
+            return user;
+        } else {
+            return null;
+        }
+	}
 }

@@ -1,9 +1,15 @@
 package br.com.primeshoes.api.entities;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import br.com.primeshoes.api.enuns.OrderStatus;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -14,6 +20,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "orders")
 public class Order {
 
@@ -31,21 +38,27 @@ public class Order {
 	private OrderStatus status;
 	
 	private String trackingCode;
-	private Date created_at;
-	private Date updated_at;
+	
+	@CreatedDate
+    @Column(name = "createdAt", updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updatedAt")
+    private LocalDateTime updatedAt;
 	
 	public Order() {}
 
-	public Order(long id, User user, float totalPrice, OrderStatus status, String trackingCode, Date created_at,
-			Date updated_at) {
+	public Order(long id, User user, float totalPrice, OrderStatus status, String trackingCode, LocalDateTime createdAt,
+			LocalDateTime updatedAt) {
 		super();
 		this.id = id;
 		this.user = user;
 		this.totalPrice = totalPrice;
 		this.status = status;
 		this.trackingCode = trackingCode;
-		this.created_at = created_at;
-		this.updated_at = updated_at;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 	}
 
 	public long getId() {
@@ -88,19 +101,19 @@ public class Order {
 		this.trackingCode = trackingCode;
 	}
 
-	public Date getCreated_at() {
-		return created_at;
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setCreated_at(Date created_at) {
-		this.created_at = created_at;
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 
-	public Date getUpdated_at() {
-		return updated_at;
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
 	}
 
-	public void setUpdated_at(Date updated_at) {
-		this.updated_at = updated_at;
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 }

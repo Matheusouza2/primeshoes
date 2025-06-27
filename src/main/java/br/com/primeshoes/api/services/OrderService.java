@@ -17,10 +17,13 @@ public class OrderService {
 	@Autowired
 	OrderRepository orderRepository;
 	
+	@Autowired
+	OrderMapper orderMapper;
 	
-public OrderResponseDTO store(OrderCreateDTO orderCreateDTO) {
+	
+	public OrderResponseDTO store(OrderCreateDTO orderCreateDTO) {
 		
-		Order order = OrderMapper.toEntity(orderCreateDTO);
+		Order order = orderMapper.toEntity(orderCreateDTO);
 				
 		return OrderMapper.toDTO(orderRepository.save(order));
 	}
@@ -40,6 +43,4 @@ public OrderResponseDTO store(OrderCreateDTO orderCreateDTO) {
 		
 		orderRepository.delete(order);
 	}
-	
-
 }

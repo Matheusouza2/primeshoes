@@ -1,15 +1,14 @@
 package br.com.primeshoes.api.dtos;
 
-import br.com.primeshoes.api.entities.User;
 import br.com.primeshoes.api.enuns.OrderStatus;
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 public record OrderResponseDTO(
 			long id, 
-			User user,
+			UserResponseDTO user,
 			float totalPrice,
 			OrderStatus status,
 			String trackingCode,
-			Date createdAt,
-			Date updatedAt
+			LocalDateTime createdAt,
+			LocalDateTime updatedAt
 		) {}

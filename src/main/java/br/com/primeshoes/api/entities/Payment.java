@@ -1,10 +1,16 @@
 package br.com.primeshoes.api.entities;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import br.com.primeshoes.api.enuns.PaymentMethod;
 import br.com.primeshoes.api.enuns.PaymentStatus;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +21,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name = "payments")
 public class Payment {
 	
@@ -32,24 +39,31 @@ public class Payment {
 	private PaymentMethod paymentMethod;
 	
 	@Enumerated(EnumType.STRING)
+	@Column(name = "status")
 	private PaymentStatus paymentStatus;
-	private Date created_at;
-	private Date updated_at;
+	
+	@CreatedDate
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 	
 	public Payment() {	}
 	
 	
 
 	public Payment(long id, Order order, float amount, PaymentMethod paymentMethod, PaymentStatus paymentStatus,
-			Date created_at, Date updated_at) {
+			LocalDateTime createdAt, LocalDateTime updatedAt) {
 		super();
 		this.id = id;
 		this.order = order;
 		this.amount = amount;
 		this.paymentMethod = paymentMethod;
 		this.paymentStatus = paymentStatus;
-		this.created_at = created_at;
-		this.updated_at = updated_at;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 	}
 
 
@@ -94,20 +108,20 @@ public class Payment {
 		this.paymentStatus = paymentStatus;
 	}
 
-	public Date getCreated_at() {
-		return created_at;
+	public LocalDateTime getcreatedAt() {
+		return createdAt;
 	}
 
-	public void setCreated_at(Date created_at) {
-		this.created_at = created_at;
+	public void setcreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 
-	public Date getUpdated_at() {
-		return updated_at;
+	public LocalDateTime getupdatedAt() {
+		return updatedAt;
 	}
 
-	public void setUpdated_at(Date updated_at) {
-		this.updated_at = updated_at;
+	public void setupdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 	
 	

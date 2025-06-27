@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -43,6 +42,9 @@ public class UserController {
 	
 	@PostMapping("/auth")
 	public ResponseEntity<?> auth(@RequestBody AuthDTO authDTO){
+		
+		
+		
 		Authentication auth = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(authDTO.email(), authDTO.password())); 
 		
@@ -53,8 +55,13 @@ public class UserController {
 	}
 	
 	@PostMapping("/register")
-	public ResponseEntity<UserResponseDTO> store(@RequestBody UserCreateDTO userCreateDTO) {
-		return new ResponseEntity<>(userService.store(userCreateDTO), HttpStatus.CREATED);
+	public ResponseEntity<?> store(@RequestBody UserCreateDTO userCreateDTO) throws Exception {
+		try {
+			return new ResponseEntity<>(userService.store(userCreateDTO), HttpStatus.CREATED);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_GATEWAY);
+		}
 	}
 
 	@GetMapping
@@ -63,32 +70,18 @@ public class UserController {
 	}
 
 	@GetMapping("/show/{id_user}")
-	public ResponseEntity<UserResponseDTO> show(@PathVariable long id_user) {
-		try {
-			return new ResponseEntity<>(userService.show(id_user), HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-		}
+	public ResponseEntity<?> show(@PathVariable long id_user) {
+		return new ResponseEntity<>(userService.show(id_user), HttpStatus.OK);
 	}
 
 	@PatchMapping
 	public ResponseEntity<UserResponseDTO> update(@RequestBody UserUpdateDTO userUpdateDTO) {
-		try {
-			
-			return new ResponseEntity(userService.update(userUpdateDTO), HttpStatus.OK);
-			
-		} catch (Exception e) {
-			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-		}
+		return new ResponseEntity<>(userService.update(userUpdateDTO), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/delete/{id_user}")
 	public ResponseEntity<String> destroy(@PathVariable long id_user) {
-		try {
-			userService.destroy(id_user);
-			return new ResponseEntity("Usuário deletado com sucesso.", HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
-		}
+		userService.destroy(id_user);
+		return new ResponseEntity<>("Usuário deletado com sucesso.", HttpStatus.OK);
 	}
 }

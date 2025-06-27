@@ -1,14 +1,23 @@
 package br.com.primeshoes.api.entities;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @Table(name="products")
 public class Product {
 	
@@ -18,28 +27,45 @@ public class Product {
 	private String name;
 	private String description;
 	private float price;
-	private String category;
-	private String brand;
 	private String imageUrl;
 	private float rating;
-	private Date created_at;
-	private Date updated_at;
+	
+	@JoinColumn(name = "user_id")
+	@OneToOne
+	private User user;
+	
+	@JoinColumn(name = "category_id")
+	@OneToOne
+	private Category category;
+	
+	@JoinColumn(name = "brand_id")
+	@OneToOne
+	private Brand brand;
+	
+	@CreatedDate
+    @Column(name = "createdAt", updatable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updatedAt")
+    private LocalDateTime updatedAt;
 	
 	public Product() {}
 
-	public Product(long id, String name, String description, float price, String category, String brand,
-			String imageUrl, float rating, Date created_at, Date updated_at) {
+	public Product(long id, String name, String description, float price, String imageUrl, float rating, User user,
+			Category category, Brand brand, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.price = price;
-		this.category = category;
-		this.brand = brand;
 		this.imageUrl = imageUrl;
 		this.rating = rating;
-		this.created_at = created_at;
-		this.updated_at = updated_at;
+		this.user = user;
+		this.category = category;
+		this.brand = brand;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 	}
 
 	public long getId() {
@@ -74,20 +100,44 @@ public class Product {
 		this.price = price;
 	}
 
-	public String getCategory() {
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Category getCategory() {
 		return category;
 	}
 
-	public void setCategory(String category) {
+	public void setCategory(Category category) {
 		this.category = category;
 	}
 
-	public String getBrand() {
+	public Brand getBrand() {
 		return brand;
 	}
 
-	public void setBrand(String brand) {
+	public void setBrand(Brand brand) {
 		this.brand = brand;
+	}
+
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	public String getImageUrl() {
@@ -106,19 +156,4 @@ public class Product {
 		this.rating = rating;
 	}
 
-	public Date getCreated_at() {
-		return created_at;
-	}
-
-	public void setCreated_at(Date created_at) {
-		this.created_at = created_at;
-	}
-
-	public Date getUpdated_at() {
-		return updated_at;
-	}
-
-	public void setUpdated_at(Date updated_at) {
-		this.updated_at = updated_at;
-	}	
 }

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import br.com.primeshoes.api.dtos.CartCreateDTO;
 import br.com.primeshoes.api.dtos.CartResponseDTO;
-import br.com.primeshoes.api.dtos.CartUpdateDTO;
 import br.com.primeshoes.api.entities.Cart;
 import br.com.primeshoes.api.mappers.CartMapper;
 import br.com.primeshoes.api.repositories.CartRepository;
@@ -28,27 +27,10 @@ public class CartService {
 	public List<CartResponseDTO> list(){
 		return cartRepository.findAll().stream().map(CartMapper::toDTO).toList();
 	}
-	
-	public CartResponseDTO update(CartUpdateDTO cartUpdateDTO) {
 		
-		Cart cart = cartRepository.findById(cartUpdateDTO.id()).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
-		
-		cart.setUser(cartUpdateDTO.user());
-		
-		cartRepository.save(cart);
-		
-		return CartMapper.toDTO(cart);		
-	}
-	
 	public CartResponseDTO show(long id) {
 		Cart cart = cartRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
 		
 		return CartMapper.toDTO(cart);
-	}
-	
-	public void destroy(long id) {
-		Cart cart = cartRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-		
-		cartRepository.delete(cart);
 	}
 }
