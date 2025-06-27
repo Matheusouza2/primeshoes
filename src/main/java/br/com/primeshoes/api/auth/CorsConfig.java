@@ -1,7 +1,7 @@
 package br.com.primeshoes.api.auth;
 
 import java.util.List;
-
+//Comentario qualquer
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
